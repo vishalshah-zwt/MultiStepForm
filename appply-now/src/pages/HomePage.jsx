@@ -1,4 +1,4 @@
-import React, { createContext } from 'react'
+import React, { createContext, useEffect } from 'react'
 
 import { useFormik } from 'formik';
 import PersonalDetails from '../components/PersonalDetails';
@@ -10,7 +10,7 @@ function HomePage() {
 
     
     //FDRMIK STARTED
-    const initialValues ={
+    const initialValues = {
         personalDetails:{
             name:'',
             email:'',
@@ -18,7 +18,8 @@ function HomePage() {
             gender:'',
             city:'',
             state:'',
-            zipCode:''
+            zipCode:'',
+            DOB:''
         },
         workExperience:{
             fresher:'',
@@ -36,11 +37,29 @@ function HomePage() {
         }
     }
 
-    const {values,setFieldValue,handleChange} = useFormik({
-        initialValues,
+   
+    const {values,setFieldValue,handleChange,handleSubmit} = useFormik({
+        initialValues ,
 
     })
     //FDRMIK ENDED
+
+    const dataOfLocalStorage = JSON.parse(localStorage.getItem('Data'))
+    console.log(dataOfLocalStorage)
+    useEffect(()=>{
+
+      
+            if(dataOfLocalStorage)
+            {
+                setFieldValue(values.personalDetails = dataOfLocalStorage.personalDetails)
+                setFieldValue(values.workExperience = dataOfLocalStorage.workExperience)
+                setFieldValue(values.personalSkills = dataOfLocalStorage.personalDetails)
+                setFieldValue(values.selfDescription = dataOfLocalStorage.selfDescription)
+                setFieldValue(values.pointers = dataOfLocalStorage.pointers)
+            }
+      
+
+    },[])
 
     console.log(values)
     return (
@@ -48,8 +67,8 @@ function HomePage() {
             <MyContext.Provider value={{ values, setFieldValue, handleChange }}>
                <PersonalDetails />
                <WorkExperience />
-               <PersonalSkills />
-               <SelfDescription />
+               {/* <PersonalSkills />
+               <SelfDescription /> */}
             </MyContext.Provider>
         </div>
     )
