@@ -60,7 +60,7 @@ function HomePage() {
       
 
     },[])
-
+    console.log("first")
     console.log(values,"Values")
     return (
         <div>
