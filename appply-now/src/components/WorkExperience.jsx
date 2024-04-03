@@ -89,7 +89,7 @@ function WorkExperience() {
                                         <div className='ExperienceCountContainer'>
 
                                             <div className='ExperienceCount'>
-                                                <div className='OrganizationName flex mx-4 my-4 align-center justify-center inline'>
+                                                <div className='organizationNameContainer flex mx-4 my-4 align-center justify-center inline'>
                                                     <label for="personalDetails.name" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-white  my-2.5 mx-4">
                                                         Organization Name:
                                                     </label>
@@ -102,7 +102,7 @@ function WorkExperience() {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='Date flex mx-4 my-4 align-center justify-center inline'>
+                                                <div className='dateContainer flex mx-4 my-4 align-center justify-center inline'>
                                                     <label for="personalDetails.name" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-white  my-2.5 mx-4">
                                                         Start Date:
                                                     </label>
@@ -124,7 +124,7 @@ function WorkExperience() {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                <div className='Position flex mx-4 my-4 align-center justify-center inline'>
+                                                <div className='positionContainer flex mx-4 my-4 align-center justify-center inline'>
                                                     <label for="personalDetails.name" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-white  my-2.5 mx-4">
                                                         Position:
                                                     </label>

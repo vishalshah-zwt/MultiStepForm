@@ -45,7 +45,7 @@ function HomePage() {
     //FDRMIK ENDED
 
     const dataOfLocalStorage = JSON.parse(localStorage.getItem('Data'))
-    console.log(dataOfLocalStorage)
+    console.log(dataOfLocalStorage,"LocalStorage")
     useEffect(()=>{
 
       
@@ -61,7 +61,7 @@ function HomePage() {
 
     },[])
 
-    console.log(values)
+    console.log(values,"Values")
     return (
         <div>
             <MyContext.Provider value={{ values, setFieldValue, handleChange }}>
