@@ -1,3 +1,9 @@
 import { createContext } from "react";
 
-export const MyContext = createContext("");
+const MyContext = createContext("");
+const WorkExperience = createContext("");
+
+export {
+    MyContext,
+    
+}

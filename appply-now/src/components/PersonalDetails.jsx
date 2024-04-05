@@ -1,20 +1,27 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { MyContext } from '../context/ContextAPI'
+import { validateYupSchema } from 'formik'
+import FormValidation from '../schema/FormValidation'
 
 function PersonalDetails() {
-    const { values, setFieldValue, handleChange } = useContext(MyContext)
+    const { values, setFieldValue, handleChange, handleSubmit, errors, validateForm , handleNext , database ,touched} = useContext(MyContext)
    
-
-    const handleNext = () => {
-        setFieldValue(values.pointers.personalDetails = false)
-        setFieldValue(values.pointers.workExperience = true)
-        localStorage.setItem('Data',JSON.stringify(values))
-    }
+    useEffect(() => {
+        if (values.status.personalDetails.isValidationFired) {
+            if (!Object.keys(errors).includes('personalDetails')) {
+                setFieldValue(values.status.personalDetails.pointer = false)
+                setFieldValue(values.status.workExperience.pointer = true)
+                localStorage.setItem('Data',JSON.stringify(values))
+                
+            }
+        }
+    }, [values.status.personalDetails.isValidationFired])
+      
     return (
         <>
             {
-                values.pointers.personalDetails ?
-                    <div className='MasterContainer container  my-16 mx-auto border'>
+                ( values.status.personalDetails.pointer) ?
+                    <div className='MasterContainer container  my-16 mx-auto '>
                         <div className='Navbar'>
                             <nav className="bg-white border-gray-200 dark:bg-gray-900 flex items-center justify-center my-8 ">
                                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between  p-4">
@@ -47,7 +54,7 @@ function PersonalDetails() {
                         <div className='formContainer'>
 
 
-                            <form className="max-w-sm mx-auto" >
+                            <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
                                 <div className="nameContainer mb-5">
                                     <label
                                         for="personalDetails.name"
@@ -61,8 +68,16 @@ function PersonalDetails() {
                                         name='personalDetails.name'
                                         value={values.personalDetails.name}
                                         onChange={handleChange}
+                                        
                                     />
                                 </div>
+                                {
+                                    (values.status.personalDetails.isValidationFired && errors?.personalDetails?.name ) ?
+                                    <div className='text-green-500 mb-4'>
+                                        Required
+                                    </div>
+                                    :null
+                                }
 
                                 <div className="emailContainer mb-5">
                                     <label
@@ -79,6 +94,13 @@ function PersonalDetails() {
                                         onChange={handleChange}
                                     />
                                 </div>
+                                {
+                                    (values.status.personalDetails.isValidationFired &&  errors?.personalDetails?.email ) ?
+                                    <div className='text-green-500 mb-4'>
+                                        Required
+                                    </div>
+                                    :null
+                                }
 
                                 <div className="contactNumberContainer mb-5">
                                     <label
@@ -95,6 +117,13 @@ function PersonalDetails() {
                                         onChange={handleChange}
                                     />
                                 </div>
+                                {
+                                    (values.status.personalDetails.isValidationFired &&  errors?.personalDetails?.contactNumber ) ?
+                                    <div className='text-green-500 mb-4'>
+                                        Required
+                                    </div>
+                                    :null
+                                }
 
                                 {/* RADIO BUTTON FOR GENDER STARTED*/}
                                 <div className='GenderContainer mb-5'>
@@ -149,6 +178,13 @@ function PersonalDetails() {
                                         </label>
                                     </div>
                                 </div>
+                                {
+                                    (values.status.personalDetails.isValidationFired && errors?.personalDetails?.gender ) ?
+                                    <div className='text-green-500 mb-4'>
+                                        Required
+                                    </div>
+                                    :null
+                                }
                                 {/* RADIO BUTTON FOR GENDER ENDED*/}
 
                                 <div className="DOBContainer mb-5">
@@ -166,17 +202,24 @@ function PersonalDetails() {
                                         onChange={handleChange}
                                     />
                                 </div>
-
+                                {
+                                    (values.status.personalDetails.isValidationFired && errors?.personalDetails?.DOB ) ?
+                                    <div className='text-green-500 mb-4'>
+                                        Required
+                                    </div>
+                                    :null
+                                }
 
                                 <div className='ButtonContainer'>
                                     <button
                                         type="button"
-                                        onClick={handleNext}
+                                        onClick={()=>handleNext('personalDetails')}
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     >
                                         Next
                                     </button>
                                 </div>
+                                
                             </form>
 
                         </div>
