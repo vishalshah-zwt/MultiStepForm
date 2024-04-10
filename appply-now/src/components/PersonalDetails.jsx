@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { MyContext } from '../context/ContextAPI'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { date } from 'yup';
 
 function PersonalDetails() {
     const { values, setFieldValue, handleChange, handleSubmit, errors, validateForm, touched, setActiveState, activeState, handleReset, backToFirstPage } = useContext(MyContext)
@@ -11,6 +12,9 @@ function PersonalDetails() {
         if (Object.keys(error).length === 0) {
             setFieldValue(values.status.personalDetails.pointer = false)
             setFieldValue(values.status.workExperience.pointer = true)
+            setFieldValue(values.status.personalDetails.isSubmitted = true)
+            setFieldValue(values.status.workExperience.isSubmitting = true)
+            setFieldValue(values.status.personalDetails.isSubmitting = false)
             localStorage.setItem('Data', JSON.stringify(values))
             setActiveState(1)
             localStorage.setItem('activeState', JSON.stringify(1))
@@ -20,6 +24,7 @@ function PersonalDetails() {
 
 
 
+    const maxDate = String(new Date().getFullYear() - 10)
     return (
         <>
             {
@@ -32,7 +37,7 @@ function PersonalDetails() {
                             <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
                                 <div className="nameContainer mb-5">
                                     <label
-                                        for="personalDetails.name"
+                                        htmlFor="personalDetails.name"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Full Name
@@ -58,7 +63,7 @@ function PersonalDetails() {
 
                                 <div className="emailContainer mb-5">
                                     <label
-                                        for="personalDetails.email"
+                                        htmlFor="personalDetails.email"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Email
@@ -82,7 +87,7 @@ function PersonalDetails() {
 
                                 <div className="contactNumberContainer mb-5">
                                     <label
-                                        for="personalDetails.contactNumber"
+                                        htmlFor="personalDetails.contactNumber"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Contact Number
@@ -119,7 +124,7 @@ function PersonalDetails() {
                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                         />
                                         <label
-                                            for="male"
+                                            htmlFor="male"
                                             className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                                         >
                                             Male
@@ -136,7 +141,7 @@ function PersonalDetails() {
                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                         />
                                         <label
-                                            for="female"
+                                            htmlFor="female"
                                             className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Female
                                         </label>
@@ -152,7 +157,7 @@ function PersonalDetails() {
                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                         />
                                         <label
-                                            for="other"
+                                            htmlFor="other"
                                             className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Other
                                         </label>
@@ -166,28 +171,25 @@ function PersonalDetails() {
                                         :
                                         null
                                 }
-                                {/* RADIO BUTTON FOR GENDER ENDED*/}
+                                {/* RADIO BUTTON htmlFor GENDER ENDED*/}
 
                                 <div className="DOBContainer mb-5">
                                     <label
-                                        for="date"
+                                        htmlFor="date"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         DOB:
                                     </label>
-                                    {/*  <input
-                                        id='date'
-                                        type="date"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        name='personalDetails.DOB'
-                                        value={values?.personalDetails?.DOB}
-                                        onChange={handleChange}
-                                    /> */}
+
                                     <DatePicker
+                                        name='personalDetails.DOB'
                                         showIcon
-                                        selected={values?.personalDetails?.startDate}
-                                        onChange={(date) => setFieldValue('personalDetails.startDate', date)}
-                                        className='border-2 outline-2'
+                                        className='border'
+                                        maxDate={maxDate}
+                                        showMonthDropdown
+                                        showYearDropdown
+                                        selected={values?.personalDetails?.DOB}
+                                        onChange={(date) => setFieldValue('personalDetails.DOB', date)}
                                     />
 
                                     {
@@ -203,7 +205,7 @@ function PersonalDetails() {
                                         <button
                                             type="button"
                                             onClick={handleNext}
-                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            className="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         >
                                             Next
                                         </button>

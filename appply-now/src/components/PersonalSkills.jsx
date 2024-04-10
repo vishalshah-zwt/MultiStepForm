@@ -16,32 +16,16 @@ function PersonalSkills() {
     ];
 
     const [optionsForSkills, setOptionsForSkills] = useState([])
-    //OPTIONS ENDED
+    //OPTIONS  ENDED
 
-
-
-
-
-    /*   useEffect(()=>{
-          setFieldValue(values.selectedSkills = [])
-          setFieldValue(values.personalSkills.skills = [])
-          setFieldValue(values.personalSkills.field = e.value)
-          setFieldValue(values.selectedField = e)
-          let field = e.value
-  
-  
-          skills[field].map((items) => {
-              return skillsOption.push({ value: items, label: items })
-          })
-          setOptionsForSkills(skillsOption)
-      },[]) */
     //EVENT HANDLERS STARTED
-
     const handleNext = async () => {
         const error = await validateForm()
         if (Object.keys(error).length === 0) {
             setFieldValue(values.status.personalSkills.pointer = false)
             setFieldValue(values.status.selfDescription.pointer = true)
+            setFieldValue(values.status.selfDescription.isSubmitting = true)
+            setFieldValue(values.status.personalSkills.isSubmitting = false)
             localStorage.setItem('Data', JSON.stringify(values))
             setActiveState(3)
             localStorage.setItem('activeState', JSON.stringify(3))
@@ -51,6 +35,9 @@ function PersonalSkills() {
     const handlePrevious = () => {
         setFieldValue(values.status.personalSkills.pointer = false)
         setFieldValue(values.status.workExperience.pointer = true)
+        setFieldValue(values.status.personalSkills.isSubmitted = true)
+        setFieldValue(values.status.workExperience.isSubmitting = true)
+        setFieldValue(values.status.personalSkills.isSubmitting = false)
         setActiveState(1)
         localStorage.setItem('activeState', JSON.stringify(1))
         localStorage.setItem('Data', JSON.stringify(values))
@@ -61,8 +48,7 @@ function PersonalSkills() {
     const handleField = (e) => {
         setFieldValue(values.selectedSkills = [])
         setFieldValue(values.personalSkills.skills = [])
-        setFieldValue(values.personalSkills.field = e.value)
-        setFieldValue(values.selectedField = e)
+        setFieldValue(values.personalSkills.field = e)
 
     }
 
@@ -72,10 +58,9 @@ function PersonalSkills() {
         e.map((items) => {
             skills.push(items.value)
         })
-        setFieldValue(values.personalSkills.skills = (skills))
-        setFieldValue(values.selectedSkills = e)
+        setFieldValue(values.personalSkills.skills = e)
     }
-    //EVENT HANDLERS ENDED
+    //EVENT      ENDED
 
 
 
@@ -93,23 +78,22 @@ function PersonalSkills() {
                                     Enter Your Field
                                 </p>
                                 <Select
-                                    value={values.selectedField}
+                                    value={values.personalSkills.field}
                                     onChange={(e) => handleField(e)}
                                     options={optionsForField}
                                 />
                             </div>
                             {
                                 ((values.status.personalSkills.isValidationFired > 0) && errors?.personalSkills?.field) ?
-                                    <div className='text-green-500 mb-4'>
+                                    <div className='text-red-500 mb-4'>
                                         Required
                                     </div>
                                     : null
                             }
+
                             {
-                                    console.log(values.selectedField.label,"************")
-                            }
-                            {
-                                ( (values?.selectedField?.label !== undefined)  && (values?.selectedField?.label !== 'Finance')) ?
+                                // ((values?.selectedField?.label !== undefined) && (values?.selectedField?.label !== 'Finance')) ?
+                                ((values?.personalSkills.field !== "") && (values?.personalSkills.field.value !== "Finance")) ?
 
                                     <div className=' w-[30%]'>
                                         <p
@@ -117,11 +101,11 @@ function PersonalSkills() {
                                             Enter Your Skills
                                         </p>
                                         <Select
-                                            value={values.selectedSkills}
+                                            value={values.personalSkills.skills}
                                             onChange={(e) => handleSkills(e)}
                                             isMulti
-                                            isOptionDisabled={(option) => (values.selectedSkills).length >= 5}
-                                            options={skills[values.selectedField.label]}
+                                            options={skills[values.personalSkills.field.value]}
+                                            isOptionDisabled={(option) => (values?.personalSkills?.skills).length >= 5}
                                         />
                                     </div>
                                     :
@@ -129,7 +113,7 @@ function PersonalSkills() {
                             }
                             {
                                 ((values.status.personalSkills.isValidationFired > 0) && errors?.personalSkills?.skills) ?
-                                    <div className='text-green-500 mb-4'>
+                                    <div className='text-red-500 mb-4'>
                                         Required
                                     </div>
                                     : null

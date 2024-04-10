@@ -10,6 +10,7 @@ import FormValidation from '../schema/FormValidation';
 import Swal from 'sweetalert2';
 
 import "../App.css"
+import { object } from 'yup';
 
 
 function HomePage() {
@@ -19,7 +20,7 @@ function HomePage() {
 
     //CONNECTING LOCAL STORAGE STARTED
     const dataOfLocalStorage = JSON.parse(localStorage.getItem('Data'))
-    const [activeState, setActiveState] = useState(dataOfLocalStorage?.activeState || 0)
+    const [activeState, setActiveState] = useState(localStorage.getItem('activeState') || 0)
 
 
 
@@ -40,18 +41,17 @@ function HomePage() {
         experienced: dataOfLocalStorage?.experienced || [{ orgName: '', startDate: '', endDate: '', position: '' }],
         personalSkills: {
             field: dataOfLocalStorage?.personalSkills?.field || '',
-            skills: dataOfLocalStorage?.selectedSkills || []
+            skills: dataOfLocalStorage?.personalSkills?.skills || []
         },
         selfDescription: dataOfLocalStorage?.selfDescription?.field || '',
         status: dataOfLocalStorage?.status || {
-            personalDetails: { isValidationFired: 0, pointer: true },
-            workExperience: { isValidationFired: 0, pointer: false },
-            personalSkills: { isValidationFired: 0, pointer: false },
-            selfDescription: { isValidationFired: 0, pointer: false },
+            personalDetails: { isValidationFired: 0, pointer: true, isSubmitted: false },
+            workExperience: { isValidationFired: 0, pointer: false, isSubmitted: false },
+            personalSkills: { isValidationFired: 0, pointer: false, isSubmitted: false },
+            selfDescription: { isValidationFired: 0, pointer: false, isSubmitted: false },
         },
         isFormSubmitted: dataOfLocalStorage?.isFormSubmitted || false,
-        selectedField: dataOfLocalStorage?.selectedField || '',
-        selectedSkills: dataOfLocalStorage?.selectedSkills || [],
+
     }
 
     const [initialValues, setInitialValues] = useState(initialValuesVariable)
@@ -77,15 +77,14 @@ function HomePage() {
         })
         setFieldValue('selfDescription', '')
         setFieldValue('status', {
-            personalDetails: { isValidationFired: 0, pointer: true },
-            workExperience: { isValidationFired: 0, pointer: false },
-            personalSkills: { isValidationFired: 0, pointer: false },
-            selfDescription: { isValidationFired: 0, pointer: false }
+            personalDetails: { isValidationFired: 0, pointer: true, isSubmitted: false },
+            workExperience: { isValidationFired: 0, pointer: false, isSubmitted: false },
+            personalSkills: { isValidationFired: 0, pointer: false, isSubmitted: false },
+            selfDescription: { isValidationFired: 0, pointer: false, isSubmitted: false }
         })
         setFieldValue('isFormSubmitted', false)
-        setFieldValue('selectedField', '')
-        setFieldValue('selectedSkills', '')
         setActiveState(0)
+        localStorage.removeItem('activeState')
     }
 
     var RegisteredUser = [];
@@ -97,7 +96,6 @@ function HomePage() {
         validationSchema: FormValidation[activeState],
         onSubmit: (value, action) => {
             setFieldValue(values.isFormSubmitted = true)
-            // setFieldValue(values.selfDescription.isValidationFired = (values.selfDescription.isValidationFired + 1))
             localStorage.setItem('Data', JSON.stringify(values))
             Swal.fire({
                 position: "top-end",
@@ -112,34 +110,74 @@ function HomePage() {
             setActiveState(0)
             localStorage.setItem('activeState', JSON.stringify(0));
             backToFirstPage();
-            /*  setFieldValue('status', {
-                 personalDetails: { isValidationFired: 0, pointer: true },
-                 workExperience: { isValidationFired: 0, pointer: false },
-                 personalSkills: { isValidationFired: 0, pointer: false },
-                 selfDescription: { isValidationFired: 0, pointer: false }
-             }) */
+
+
         }
     })
     //FDRMIK ENDED
 
 
 
+    for (let i in values.status) {
+        if (i.isSubmitting == true) {
+            console.log(i, "&&&&&&&&&&&&&&")
+        }
+    }
+    const tabbing = async (activePage) => {
+        const error = await validateForm()
+        if (activePage === 0) {
+            if (values?.status?.personalDetails?.isSubmitted === true || values?.status?.personalDetails?.isSubmitting === true) {
+                {
+                    if (Object.keys(errors).length < 1 || Object.keys(errors).includes('experienced')) {
+                        setFieldValue(values.status.personalDetails.pointer = true)
+                        setFieldValue(values.status.workExperience.pointer = false)
+                        setFieldValue(values.status.personalSkills.pointer = false)
+                        setFieldValue(values.status.selfDescription.pointer = false)
+                        console.log(values, "********")
+                        localStorage.setItem('Data', JSON.stringify(values))
+                        setActiveState(0)
+                        localStorage.setItem('activeState', JSON.stringify(0))
+                    }
+                }
+            }
+        }
+        if (activePage === 1) {
+            if (values?.status?.workExperience?.isSubmitted === true || values?.status?.workExperience?.isSubmitting === true) {
+                {
+                    setFieldValue(values.status.personalDetails.pointer = false)
+                    setFieldValue(values.status.workExperience.pointer = true)
+                    setFieldValue(values.status.personalSkills.pointer = false)
+                    setFieldValue(values.status.selfDescription.pointer = false)
+                    localStorage.setItem('Data', JSON.stringify(values))
+                    setActiveState(1)
+                    localStorage.setItem('activeState', JSON.stringify(1))
+                }
+            }
+        }
+        /* if (activePage === 2) {
+            setFieldValue('status', {
+                personalDetails: { isValidationFired: 0, pointer: false },
+                workExperience: { isValidationFired: 0, pointer: false },
+                personalSkills: { isValidationFired: 0, pointer: true },
+                selfDescription: { isValidationFired: 0, pointer: false }
+            })
+        }
+        if (activePage === 3) {
+            setFieldValue('status', {
+                personalDetails: { isValidationFired: 0, pointer: true },
+                workExperience: { isValidationFired: 0, pointer: false },
+                personalSkills: { isValidationFired: 0, pointer: false },
+                selfDescription: { isValidationFired: 0, pointer: true }
+            })
+        } */
 
+    }
 
-
-
-    //EVENT HANDLERS ENDED
 
     const database = JSON.parse(localStorage.getItem('Data'))
-
-    //LOGS STARTED
-    // console.log(dataOfLocalStorage,"LocalStorage")
     console.log(values, "Values")
-    // console.log(database, "Database")
     console.log(errors, "Errors")
     console.log(activeState, "ActiveState")
-
-
     //LOGS ENDED
 
 
@@ -148,10 +186,10 @@ function HomePage() {
     return (
         <div>
             <div className='Navbar'>
-                <p className={activeState == 0 ? "active" : ""}>Personal Details</p>
-                <p className={activeState == 1 ? "active" : ""}>Work Experience</p>
-                <p className={activeState == 2 ? "active" : ""}>Personal Skills</p>
-                <p className={activeState == 3 ? "active" : ""}>Self Description</p>
+                <p className={activeState == 0 ? "active" : ""} onClick={() => tabbing(0)}>Personal Details</p>
+                <p className={activeState == 1 ? "active" : ""} onClick={() => tabbing(1)}  >Work Experience</p>
+                <p className={activeState == 2 ? "active" : ""} onClick={() => tabbing(2)} >Personal Skills</p>
+                <p className={activeState == 3 ? "active" : ""} onClick={() => tabbing(3)} >Self Description</p>
             </div>
             <MyContext.Provider value={{ values, setFieldValue, handleChange, handleSubmit, errors, validateForm, backToFirstPage, dataOfLocalStorage, database, dataOfLocalStorage, touched, handleReset, activeState, setActiveState }}>
                 <PersonalDetails />
@@ -163,6 +201,6 @@ function HomePage() {
             </MyContext.Provider>
         </div>
     )
-}
 
+}
 export default HomePage

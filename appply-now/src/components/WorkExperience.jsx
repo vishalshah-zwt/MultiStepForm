@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { MyContext } from '../context/ContextAPI'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function WorkExperience() {
     const { values, setFieldValue, handleChange, handleSubmit, validateForm, errors, activeState, setActiveState, dataOfLocalStorage, handleReset, backToFirstPage } = useContext(MyContext)
@@ -10,9 +12,12 @@ function WorkExperience() {
     const handleNext = async () => {
         const error = await validateForm()
         if (Object.keys(error).length === 0) {
+            if (values?.cadidateCategory === "Fresher") { (setFieldValue('experienced', [])) }
             setFieldValue(values.status.workExperience.pointer = false)
             setFieldValue(values.status.personalSkills.pointer = true)
-            setFieldValue(values.status.workExperience.isValidationFired = values.status.workExperience.isValidationFired + 1)
+            setFieldValue(values.status.workExperience.isSubmitted = true)
+            setFieldValue(values.status.personalSkills.isSubmitting = true)
+            setFieldValue(values.status.workExperience.isSubmitting = false)
             localStorage.setItem('Data', JSON.stringify(values))
             setActiveState(2)
             localStorage.setItem('activeState', JSON.stringify(2))
@@ -23,6 +28,8 @@ function WorkExperience() {
     const handlePrevious = () => {
         setFieldValue(values.status.workExperience.pointer = false)
         setFieldValue(values.status.personalDetails.pointer = true)
+        setFieldValue(values.status.workExperience.isSubmitting = false)
+        setFieldValue(values.status.personalDetails.isSubmitting = true)
         setActiveState(0)
         localStorage.setItem('activeState', JSON.stringify(0))
         localStorage.setItem('Data', JSON.stringify(values))
@@ -50,6 +57,7 @@ function WorkExperience() {
         }
 
     }
+
 
 
     return (
@@ -110,7 +118,8 @@ function WorkExperience() {
                                     <div className='ExperienceContainer'>
                                         {
                                             values?.experienced?.map((item, index) => {
-                                                console.log('fdf')
+                                                let minDate = new Date(values?.experienced?.[index]?.startDate)
+                                                minDate.setDate(minDate.getDate() + 1)
                                                 return <div className='ExperienceCountContainer'>
                                                     <div className='ExperienceCount'>
                                                         <div className='organizationNameContainer flex mx-4 my-4 align-center justify-center inline'>
@@ -137,12 +146,16 @@ function WorkExperience() {
                                                             <label for="personalDetails.name" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-white  my-2.5 mx-4">
                                                                 Start Date:
                                                             </label>
-                                                            <input
-                                                                type="date"
-                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30%]"
-                                                                name={`experienced.${index}.startDate`}
-                                                                value={values?.experienced?.[index]?.startDate}
-                                                                onChange={handleChange}
+
+                                                            <DatePicker
+                                                                name='experienced.startDate'
+                                                                showIcon
+                                                                maxDate={new Date()}
+                                                                className='border'
+                                                                showMonthDropdown
+                                                                showYearDropdown
+                                                                selected={values?.experienced?.[index]?.startDate}
+                                                                onChange={(date) => setFieldValue(`experienced[${index}].startDate`, date)}
                                                             />
                                                             {
                                                                 (values.status.workExperience.isValidationFired && errors?.experienced?.[index]?.startDate) ?
@@ -154,12 +167,17 @@ function WorkExperience() {
                                                             <label for="personalDetails.name" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-white  my-2.5 mx-4">
                                                                 End Date:
                                                             </label>
-                                                            <input
-                                                                type="date"
-                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30%]"
-                                                                name={`experienced.${index}.endDate`}
-                                                                value={values?.experienced?.[index]?.endDate}
-                                                                onChange={handleChange}
+                                                            <DatePicker
+                                                                name='experienced.endDate'
+                                                                showIcon
+                                                                maxDate={new Date()}
+                                                                minDate={minDate}
+                                                                disabled={values?.experienced?.[index]?.startDate === ''}
+                                                                className='border'
+                                                                showMonthDropdown
+                                                                showYearDropdown
+                                                                selected={values?.experienced?.[index]?.endDate}
+                                                                onChange={(date) => setFieldValue(`experienced[${index}].endDate`, date)}
                                                             />
                                                             {
                                                                 (values.status.workExperience.isValidationFired && errors?.experienced?.[index]?.endDate) ?
@@ -202,14 +220,22 @@ function WorkExperience() {
                                             >
                                                 Add More
                                             </button>
-                                            <button
-                                                type="button"
-                                                value='Remove'
-                                                onClick={(e) => handleExperienceCount(e)}
-                                                className=" text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                                            >
-                                                Remove
-                                            </button>
+                                            {
+                                                values?.experienced.length > 1 ?
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            value='Remove'
+                                                            onClick={(e) => handleExperienceCount(e)}
+                                                            className=" text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </>
+                                                    :
+                                                    null
+                                            }
+
                                         </div>
 
                                     </div>

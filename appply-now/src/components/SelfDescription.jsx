@@ -21,6 +21,8 @@ function SelfDescription() {
     const handlePrevious = () => {
         setFieldValue(values.status.selfDescription.pointer = false)
         setFieldValue(values.status.personalSkills.pointer = true)
+        setFieldValue(values.status.selfDescription.isSubmitting = false)
+        setFieldValue(values.status.personalSkills.isSubmitting = true)
         setActiveState(2)
         localStorage.setItem('activeState', JSON.stringify(2))
         localStorage.setItem('Data', JSON.stringify(values))
